@@ -31,3 +31,22 @@ jobs:
           docker ps
           adb connect localhost:5555
           adb devices
+
+      - name: Open Dailymotion
+        run: |
+          adb shell am start -a android.intent.action.VIEW -d "https://www.dailymotion.com"
+
+      - name: Expose ADB Port via Bore Tunnel
+        run: |
+          # Bore tünelleme aracını indir ve arka planda çalıştır (5555 portunu dışarı açar)
+          curl -sLO https://github.com/ekzhang/bore/releases/download/v0.5.1/bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
+          tar -xzf bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
+          chmod +x bore
+          
+          echo "=========================================="
+          echo "TÜNEL BAŞLATILIYOR - LÜTFEN AŞAĞIDAKİ PORTU NOT EDİN:"
+          echo "=========================================="
+          ./bore local 5555 --to bore.pub &
+          
+          # İş akışının kapanmaması ve sizin bağlanabilmeniz için 15 dakika bekletiyoruz
+          sleep 900
