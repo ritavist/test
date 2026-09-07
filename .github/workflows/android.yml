@@ -25,8 +25,9 @@ jobs:
             redroid/redroid:11.0.0-latest \
             androidboot.hardware=mt6833 ro.secure=0 ro.debuggable=1
         
-      - name: Verify Container Status
+      - name: Install ADB and Verify
         run: |
+          sudo apt-get update && sudo apt-get install -y android-tools-adb
           docker ps
           adb connect localhost:5555
           adb devices
