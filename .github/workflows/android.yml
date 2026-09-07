@@ -1,0 +1,32 @@
+name: Run Single Android Container
+
+on:
+  workflow_dispatch:
+
+jobs:
+  android-runner:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo "Checking KVM support..."
+          sudo ls -l /dev/kvm
+          sudo usermod -aG kvm $USER
+
+      - name: Start Redroid Container
+        run: |
+          docker run -d --rm --privileged \
+            --name redroid-1 \
+            -p 5555:5555 \
+            redroid/redroid:11.0.0-latest \
+            androidboot.hardware=mt6833 ro.secure=0 ro.debuggable=1
+        
+      - name: Verify Container Status
+        run: |
+          docker ps
+          adb connect localhost:5555
+          adb devices
